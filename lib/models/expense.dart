@@ -1,5 +1,7 @@
 import 'package:uuid_v4/uuid_v4.dart';
 
+import 'expense_category.dart';
+
 final uuid = UUIDv4();
 
 class Expense {
@@ -7,7 +9,12 @@ class Expense {
   final String title;
   final double amount;
   final DateTime date;
+  final ExpenseCategory category;
 
-  Expense({required this.title, required this.amount, required this.date})
-    : id = uuid.toString();
+  Expense({
+    required this.title,
+    required this.amount,
+    required this.date,
+    required this.category,
+  }) : id = uuid.toString();
 }
