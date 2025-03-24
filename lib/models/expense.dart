@@ -26,6 +26,24 @@ class Expense {
   }
 }
 
+class ExpenseBucket {
+  final ExpenseCategory category;
+  final double totalExpenses;
+
+  ExpenseBucket(this.category, this.totalExpenses);
+
+  factory ExpenseBucket.forCategory(
+    List<Expense> expenses,
+    ExpenseCategory category,
+  ) {
+    final totalExpenses = expenses
+        .where((expense) => expense.category == category)
+        .fold(0.0, (prev, element) => prev + element.amount);
+
+    return ExpenseBucket(category, totalExpenses);
+  }
+}
+
 // Dummy data
 
 final _random = Random();

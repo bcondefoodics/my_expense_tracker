@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:my_expense_tracker/widgets/expense_list/expense_list.dart';
 import 'package:my_expense_tracker/models/expense.dart';
 import 'package:my_expense_tracker/widgets/new_expense/new_expense.dart';
+import 'package:my_expense_tracker/widgets/chart/chart.dart';
 
 class Expenses extends StatefulWidget {
   const Expenses({super.key});
@@ -55,14 +56,21 @@ class _ExpensesState extends State<Expenses> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         centerTitle: false,
         title: Text("Expenses"),
         actions: [
           IconButton(onPressed: _openAddExpensesOverlay, icon: Icon(Icons.add)),
         ],
       ),
-      body: Center(child: ExpenseList(_expenses, _deleteExpense)),
+      body: Center(
+        child: Column(
+          children: [
+            Chart(expenses: _expenses),
+            Expanded(child: ExpenseList(_expenses, _deleteExpense)),
+          ],
+        ),
+      ),
     );
   }
 }
