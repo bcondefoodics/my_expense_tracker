@@ -2,8 +2,10 @@ import 'package:uuid_v4/uuid_v4.dart';
 
 import 'dart:math';
 import 'expense_category.dart';
+import 'package:intl/intl.dart';
 
 final uuid = UUIDv4();
+var formatter = DateFormat.yMd();
 
 class Expense {
   final String id;
@@ -18,6 +20,10 @@ class Expense {
     required this.date,
     required this.category,
   }) : id = uuid.toString();
+
+  String get formattedDate {
+    return formatter.format(date);
+  }
 }
 
 // Dummy data
