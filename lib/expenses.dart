@@ -14,23 +14,25 @@ class Expenses extends StatefulWidget {
 }
 
 class _ExpensesState extends State<Expenses> {
+  void _openAddExpensesOverlay() {
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) {
+        return Text('Test Bottom sheet');
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueGrey,
-        // toolbarTextStyle: GoogleFonts.roboto(
-        //   fontSize: 25,
-        //   fontWeight: FontWeight.bold,
-        //   color: Colors.amber,
-        // ),
-        // titleTextStyle: GoogleFonts.roboto(
-        //   //   fontSize: 25,
-        //   //   fontWeight: FontWeight.bold,
-        // ),
         centerTitle: false,
         title: Text("Expenses"),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.add))],
+        actions: [
+          IconButton(onPressed: _openAddExpensesOverlay, icon: Icon(Icons.add)),
+        ],
       ),
       body: Center(child: ExpenseList(expenses: generateDummyExpenses(50))),
     );
