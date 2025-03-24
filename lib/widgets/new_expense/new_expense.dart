@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
+import 'package:my_expense_tracker/models/expense.dart';
 import 'package:my_expense_tracker/models/expense_category.dart'
     show ExpenseCategory;
 
 var formatter = DateFormat.yMd();
 
 class NewExpense extends StatefulWidget {
-  const NewExpense({super.key});
+  const NewExpense(this.onAddExpense, {super.key});
+
+  final Function(Expense) onAddExpense;
 
   @override
   State<NewExpense> createState() {
@@ -30,8 +33,40 @@ class _NewExpenseState extends State<NewExpense> {
   }
 
   void _addExpense() {
-    print(_titleController.text);
-    print(_amountController.text);
+    final title = _titleController.text;
+    final amount = double.tryParse(_amountController.text) ?? 0.0;
+
+    if (title.isEmpty || amount <= 0 || _selectedDate == null) {
+      showDialog(
+        context: context,
+        builder: (builder) {
+          return AlertDialog(
+            title: Text('Invalid Input'),
+            content: Text('Please enter a valid title, amount and date'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Okay'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    widget.onAddExpense(
+      Expense(
+        title: title,
+        amount: amount,
+        date: _selectedDate!,
+        category: _selectedCategory,
+      ),
+    );
+
+    Navigator.pop(context);
   }
 
   void _presentDatePicker() {

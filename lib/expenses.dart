@@ -14,13 +14,27 @@ class Expenses extends StatefulWidget {
 }
 
 class _ExpensesState extends State<Expenses> {
+  final List<Expense> _expenses = generateDummyExpenses(2);
+
   void _openAddExpensesOverlay() {
     showModalBottomSheet(
       context: context,
       builder: (ctx) {
-        return NewExpense();
+        return NewExpense(_addExpense);
       },
     );
+  }
+
+  void _addExpense(Expense expense) {
+    setState(() {
+      _expenses.add(expense);
+    });
+  }
+
+  void _deleteExpense(Expense expense) {
+    setState(() {
+      _expenses.remove(expense);
+    });
   }
 
   @override
@@ -34,7 +48,7 @@ class _ExpensesState extends State<Expenses> {
           IconButton(onPressed: _openAddExpensesOverlay, icon: Icon(Icons.add)),
         ],
       ),
-      body: Center(child: ExpenseList(expenses: generateDummyExpenses(50))),
+      body: Center(child: ExpenseList(_expenses, _deleteExpense)),
     );
   }
 }
