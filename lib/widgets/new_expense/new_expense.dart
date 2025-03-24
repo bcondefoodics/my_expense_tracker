@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'package:intl/intl.dart';
+import 'package:my_expense_tracker/models/expense_category.dart'
+    show ExpenseCategory;
+
+var formatter = DateFormat.yMd();
+
 class NewExpense extends StatefulWidget {
   const NewExpense({super.key});
 
@@ -10,8 +16,10 @@ class NewExpense extends StatefulWidget {
 }
 
 class _NewExpenseState extends State<NewExpense> {
-  var _titleController = TextEditingController();
-  var _amountController = TextEditingController();
+  final _titleController = TextEditingController();
+  final _amountController = TextEditingController();
+  ExpenseCategory _selectedCategory = ExpenseCategory.food;
+  DateTime? _selectedDate;
 
   @override
   void dispose() {
@@ -26,6 +34,27 @@ class _NewExpenseState extends State<NewExpense> {
     print(_amountController.text);
   }
 
+  void _presentDatePicker() {
+    final now = DateTime.now();
+    final firstDate = DateTime(now.year - 1);
+    final lastDate = DateTime(now.year + 1);
+
+    showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate: firstDate,
+      lastDate: lastDate,
+    ).then((selectedDate) {
+      if (selectedDate == null) {
+        return;
+      }
+      setState(() {
+        _selectedDate = selectedDate;
+      });
+      print(selectedDate);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -37,18 +66,66 @@ class _NewExpenseState extends State<NewExpense> {
             maxLength: 50,
             decoration: InputDecoration(label: Text('Title')),
           ),
-          TextField(
-            controller: _amountController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              prefixText: '\$ ',
-              label: Text('Amount'),
-            ),
-          ),
-          SizedBox(height: 20),
           Row(
             children: [
-              TextButton(onPressed: () {}, child: Text("Cancel")),
+              Expanded(
+                child: TextField(
+                  controller: _amountController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    prefixText: '\$ ',
+                    label: Text('Amount'),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      _selectedDate == null
+                          ? 'No Selected Date'
+                          : formatter.format(_selectedDate!),
+                    ),
+                    IconButton(
+                      onPressed: _presentDatePicker,
+                      icon: Icon(Icons.calendar_today),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              DropdownButton(
+                value: _selectedCategory,
+                items:
+                    ExpenseCategory.values
+                        .map(
+                          (category) => DropdownMenuItem(
+                            value: category,
+                            child: Text(category.name.toUpperCase()),
+                          ),
+                        )
+                        .toList(),
+                onChanged: (value) {
+                  if (value == null) {
+                    return;
+                  }
+                  setState(() {
+                    _selectedCategory = value;
+                  });
+                },
+              ),
+              Spacer(),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("Cancel"),
+              ),
               ElevatedButton(
                 onPressed: _addExpense,
                 child: Text('Add Expense'),
